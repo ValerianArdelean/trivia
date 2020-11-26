@@ -1,5 +1,6 @@
 # models module for Trivia app
 from flask_sqlalchemy import SQLAlchemy
+import os
 
 
 '''initiate SQLAlchemy to be used for clases declarations'''
@@ -13,7 +14,7 @@ db = SQLAlchemy()
 
 
 def setup_db(app):
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://valerian@localhost:5432/trivia'
+    app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['SQLALCHEMY_DATABASE_URI']
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     db = SQLAlchemy(app)
 
