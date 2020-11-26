@@ -22,11 +22,13 @@ def setup_db(app):
 '''declaring db scheema'''
 
 
-class Questions(db.Model):
+class Question(db.Model):
+    __tablename__ = 'questions'
     id = db.Column(db.Integer, primary_key=True)
     question = db.Column(db.String(), nullable=False)
     answer = db.Column(db.String())
     difficulty = db.Column(db.Integer)
+    category = db.Column(db.Integer, db.ForeignKey('categories.id'))
 
     # initialize in memory the table
     def __init__(self, id, question, answer, category, difficulty):
@@ -60,14 +62,17 @@ class Questions(db.Model):
         }
 
 
-class Categories(db.Model):
+class Category(db.Model):
+    __tablename__ = 'categories'
     id = db.Column(db.Integer, primary_key=True)
     type = db.Column(db.String(), nullable=False)
+    questions = db.relationship("Question", backref='categories')
 
     # initialize in memory the table
-    def __init__(self, id, type):
+    def __init__(self, id, type, questions):
         self.id = id
         self.type = type
+        self.questions = questions
 
     # creating attributes for db objects
     def insert(self):
