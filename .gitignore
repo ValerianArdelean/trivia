@@ -141,3 +141,4 @@ dmypy.json
 
 # profiling data
 .prof
+.DS_Store
