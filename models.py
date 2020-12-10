@@ -22,21 +22,16 @@ def setup_db(app):
 '''declaring db scheema'''
 
 
-class Question(db.Model):
+class Questions(db.Model):
     __tablename__ = 'questions'
     id = db.Column(db.Integer, primary_key=True)
     question = db.Column(db.String(), nullable=False)
     answer = db.Column(db.String())
     difficulty = db.Column(db.Integer)
-    category = db.Column(db.Integer, db.ForeignKey('categories.id'))
+    cat = db.Column(db.Integer, db.ForeignKey('category.id'))
 
-    # initialize in memory the table
-    def __init__(self, id, question, answer, category, difficulty):
-        self.id = id
-        self.question = question
-        self.answer = answer
-        self.category = category
-        self.difficulty = difficulty
+    def __repr__(self):
+        return f'{self.id} {self.question} {self.answer} {self.difficulty} {self.cat}'
 
     # creating attributes for db objects
     def insert(self):
@@ -52,27 +47,25 @@ class Question(db.Model):
 
     def sesion_close(self):
         db.session.close()
+
+    def rollback():
+        db.session.rollback()
 
     def format(self):
         return {
             'id': self.id,
             'question': self.question,
             'answer': self.answer,
-            'difficulty': self.difficulty
+            'difficulty': self.difficulty,
+            'category': self.cat
         }
 
 
 class Category(db.Model):
-    __tablename__ = 'categories'
+    __tablename__ = 'category'
     id = db.Column(db.Integer, primary_key=True)
     type = db.Column(db.String(), nullable=False)
-    questions = db.relationship("Question", backref='categories')
-
-    # initialize in memory the table
-    def __init__(self, id, type, questions):
-        self.id = id
-        self.type = type
-        self.questions = questions
+    question = db.relationship("Questions", backref='category', lazy='dynamic')
 
     # creating attributes for db objects
     def insert(self):
@@ -89,8 +82,12 @@ class Category(db.Model):
     def sesion_close(self):
         db.session.close()
 
+    def rollback():
+        db.session.rollback()
+
     def format(self):
         return {
             'id': self.id,
-            'type': self.type
+            'type': self.type,
+            #'question': self.question
         }
